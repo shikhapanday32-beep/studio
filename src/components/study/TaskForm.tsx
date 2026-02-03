@@ -51,7 +51,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
               <FormItem>
                 <FormLabel>Subject</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Mathematics" {...field} />
+                  <Input placeholder="e.g., Mathematics" {...field} suppressHydrationWarning />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,7 +64,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
               <FormItem>
                 <FormLabel>Task Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Chapter 5 exercises" {...field} />
+                  <Input placeholder="e.g., Chapter 5 exercises" {...field} suppressHydrationWarning />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,13 +78,13 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
             <FormItem>
               <FormLabel>Time (hours)</FormLabel>
               <FormControl>
-                <Input type="number" step="0.5" min="0" {...field} />
+                <Input type="number" step="0.5" min="0" {...field} suppressHydrationWarning />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" suppressHydrationWarning>
           <PlusCircle className="mr-2 h-4 w-4" /> Add Task
         </Button>
       </form>
