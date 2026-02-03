@@ -3,7 +3,7 @@
 import type { Task } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2, Book } from "lucide-react";
+import { Trash2, Book, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,7 +29,7 @@ export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemP
     <div
       className={cn(
         "flex items-center gap-4 p-4 rounded-lg border transition-all duration-300",
-        task.completed ? "bg-accent/30 border-accent" : "bg-card"
+        task.completed ? "bg-accent/30 border-accent/80" : "bg-card"
       )}
     >
       <Checkbox
@@ -50,7 +50,11 @@ export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemP
         </label>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
-                <Book className="w-3 h-3"/>
+                {task.completed ? (
+                    <CheckCircle className="h-3 w-3 text-accent-foreground" />
+                ) : (
+                    <Book className="w-3 h-3"/>
+                )}
                 <span>{task.subject}</span>
             </div>
             <span>{task.hours} hr{task.hours > 1 ? 's' : ''}</span>
@@ -60,7 +64,7 @@ export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemP
         variant="ghost"
         size="icon"
         onClick={handleDelete}
-        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 active:bg-destructive/20"
         aria-label={`Delete task ${task.title}`}
       >
         <Trash2 className="h-4 w-4" />
