@@ -2,31 +2,38 @@
 
 import { useState, useEffect } from "react";
 
-function getValue<T>(key: string, initialValue: T | (() => T)): T {
-  if (typeof window === "undefined") {
-    return initialValue instanceof Function ? initialValue() : initialValue;
-  }
-  try {
-    const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : (initialValue instanceof Function ? initialValue() : initialValue);
-  } catch (error) {
-    console.warn(`Error reading localStorage key “${key}”:`, error);
-    return initialValue instanceof Function ? initialValue() : initialValue;
-  }
-}
-
 export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [storedValue, setStoredValue] = useState<T>(() => getValue(key, initialValue));
+  const [storedValue, setStoredValue] = useState(() => {
+    if (initialValue instanceof Function) {
+      return initialValue();
+    }
+    return initialValue;
+  });
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(storedValue));
-      }
+        const item = window.localStorage.getItem(key);
+        if (item) {
+            setStoredValue(JSON.parse(item));
+        }
     } catch (error) {
-      console.warn(`Error setting localStorage key “${key}”:`, error);
+        console.warn(`Error reading localStorage key “${key}”:`, error);
+    } finally {
+        setHydrated(true);
     }
-  }, [key, storedValue]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  useEffect(() => {
+    if (hydrated) {
+        try {
+            window.localStorage.setItem(key, JSON.stringify(storedValue));
+        } catch (error) {
+            console.warn(`Error setting localStorage key “${key}”:`, error);
+        }
+    }
+  }, [key, storedValue, hydrated]);
 
   return [storedValue, setStoredValue];
 }
